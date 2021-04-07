@@ -1,31 +1,22 @@
 package discordInteraction;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.ConfigUtils;
-import com.megacrit.cardcrawl.actions.common.GainBlockAction;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
-import kobting.friendlyminions.monsters.MinionMove;
 import net.dv8tion.jda.api.entities.User;
-import org.apache.logging.log4j.core.util.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 public class ViewerMinion extends AbstractFriendlyMonster {
     private static String ID = "Viewer";
     private AbstractMonster target;
 
-    private static String getImageDirectory(User user){
+    private static String getImageDirectory(User user) {
         String dir = ConfigUtils.CONFIG_DIR + File.separator + "DiscordInteraction" + File.separator + "CachedImages" + File.separator;
         if (!(new File(dir).exists()))
             new File(dir).mkdirs();
@@ -46,7 +37,7 @@ public class ViewerMinion extends AbstractFriendlyMonster {
                 g2d.dispose();
 
                 ImageIO.write(dimg, "png", imageFile);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Main.logger.debug(e);
             }
         }

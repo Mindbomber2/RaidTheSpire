@@ -5,9 +5,9 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.util.Combat;
 import discordInteraction.battle.TargetType;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;

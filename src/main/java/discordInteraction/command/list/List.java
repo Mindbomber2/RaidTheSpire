@@ -12,34 +12,34 @@ public class List<T extends QueuedCommandBase> {
     private final Object lock = new Object();
     private ArrayList<T> commands;
 
-    public List(){
+    public List() {
         commands = new ArrayList<T>();
     }
 
-    public ArrayList<T> getCommands(){
-        synchronized (lock){
+    public ArrayList<T> getCommands() {
+        synchronized (lock) {
             ArrayList<T> list = new ArrayList<T>();
-            for(T command : commands)
+            for (T command : commands)
                 list.add(command);
             return list;
         }
     }
 
-    public void add(T command){
-        synchronized (lock){
+    public void add(T command) {
+        synchronized (lock) {
             commands.add(command);
         }
     }
 
-    public boolean hasAnotherCommand(){
-        synchronized (lock){
+    public boolean hasAnotherCommand() {
+        synchronized (lock) {
             return commands != null && !commands.isEmpty();
         }
     }
 
-    public void refund(){
-        synchronized (lock){
-            for(T command : commands) {
+    public void refund() {
+        synchronized (lock) {
+            for (T command : commands) {
                 if (Main.viewers.containsKey(command.getViewer())) {
                     Main.viewers.get(command.getViewer()).insertCard(command.getCard());
                     sendMessageToUser(command.getViewer(), "Your " + command.getCard().getName() +
@@ -48,8 +48,9 @@ public class List<T extends QueuedCommandBase> {
             }
         }
     }
-    public void clear(){
-        synchronized (lock){
+
+    public void clear() {
+        synchronized (lock) {
             commands.clear();
         }
     }

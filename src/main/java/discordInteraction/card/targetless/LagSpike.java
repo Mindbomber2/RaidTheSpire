@@ -5,8 +5,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.BufferPower;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.util.Combat;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 public class LagSpike extends AbstractCardTargetless {
@@ -40,7 +40,7 @@ public class LagSpike extends AbstractCardTargetless {
     @Override
     public Result activate(User user, AbstractPlayer player) {
         Combat.applyPower(player, new BufferPower(player, 2));
-        for(AbstractMonster monster : Main.battle.getBattleRoom().monsters.monsters)
+        for (AbstractMonster monster : Main.battle.getBattleRoom().monsters.monsters)
             Combat.applyPower(monster, new BufferPower(monster, 2));
         return new Result(true, "You applied 2 buffer to everyone.");
     }

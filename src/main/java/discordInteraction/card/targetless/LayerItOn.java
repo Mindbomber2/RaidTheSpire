@@ -3,8 +3,8 @@ package discordInteraction.card.targetless;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.powers.WeakPower;
 import discordInteraction.FlavorType;
-import discordInteraction.util.Combat;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 public class LayerItOn extends AbstractCardTargetless {

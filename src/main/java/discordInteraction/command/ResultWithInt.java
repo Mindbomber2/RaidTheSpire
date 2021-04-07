@@ -3,7 +3,7 @@ package discordInteraction.command;
 public class ResultWithInt extends Result {
     private int returnInt;
 
-    public int getReturnInt(){
+    public int getReturnInt() {
         return returnInt;
     }
 

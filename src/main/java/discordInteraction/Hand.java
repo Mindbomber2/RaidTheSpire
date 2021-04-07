@@ -1,7 +1,7 @@
 package discordInteraction;
 
-import discordInteraction.card.AbstractCard;
 import discordInteraction.battleTimer.battletimer_const;
+import discordInteraction.card.AbstractCard;
 
 import java.util.ArrayList;
 
@@ -10,22 +10,26 @@ public class Hand {
     private int capacity;
     private ArrayList<AbstractCard> cards;
     private ArrayList<FlavorType> flavorTypes;
-    public ArrayList<AbstractCard> getCards(){
+
+    public ArrayList<AbstractCard> getCards() {
         return cards;
     }
-    public ArrayList<FlavorType> getFlavorTypes(){
+
+    public ArrayList<FlavorType> getFlavorTypes() {
         return flavorTypes;
     }
-    public void addFlavor(FlavorType flavor){
+
+    public void addFlavor(FlavorType flavor) {
         if (!flavorTypes.contains(flavor))
             flavorTypes.add(flavor);
     }
-    public void removeFlavor(FlavorType flavor){
+
+    public void removeFlavor(FlavorType flavor) {
         if (flavorTypes.contains(flavor))
             flavorTypes.remove(flavor);
     }
 
-    public Hand(){
+    public Hand() {
         timer = battletimer_const.TURN_TIMER_VIEWER;
         capacity = 10;
         cards = new ArrayList<AbstractCard>();
@@ -38,18 +42,18 @@ public class Hand {
         drawNewHand(5, 2);
     }
 
-    public void insertCard(AbstractCard card){
+    public void insertCard(AbstractCard card) {
         if (cards.size() < capacity)
             cards.add(card);
     }
 
-    public void removeCard(AbstractCard card){
+    public void removeCard(AbstractCard card) {
         cards.remove(card);
     }
 
     public AbstractCard getFirstCardByName(String cardName) {
         for (AbstractCard card : cards)
-            if (card.getName().replaceAll("\\s+","").equalsIgnoreCase(cardName.replaceAll("\\s+","")))
+            if (card.getName().replaceAll("\\s+", "").equalsIgnoreCase(cardName.replaceAll("\\s+", "")))
                 return card;
 
         return null;
@@ -59,12 +63,12 @@ public class Hand {
         cards.clear();
     }
 
-    public void draw(int pointsToDraw, int basicsToDraw){
+    public void draw(int pointsToDraw, int basicsToDraw) {
         ArrayList<AbstractCard> cardPool = new ArrayList<AbstractCard>();
 
-        for(FlavorType type : flavorTypes)
-            for(AbstractCard card : Main.deck.getCardsByFlavorType(type))
-                for(int x = 0; x < Main.deck.getHighestCost(); x++)
+        for (FlavorType type : flavorTypes)
+            for (AbstractCard card : Main.deck.getCardsByFlavorType(type))
+                for (int x = 0; x < Main.deck.getHighestCost(); x++)
                     cardPool.add(card);
 
         while (pointsToDraw > 0 && cards.size() < capacity) {
@@ -84,10 +88,10 @@ public class Hand {
         draw(pointsToDraw, basicsToDraw);
     }
 
-    public void drawBasics(int pointsToDraw){
+    public void drawBasics(int pointsToDraw) {
         ArrayList<AbstractCard> cardPool = new ArrayList<AbstractCard>();
 
-        for(AbstractCard card : Main.deck.getCardsByFlavorType(FlavorType.basic))
+        for (AbstractCard card : Main.deck.getCardsByFlavorType(FlavorType.basic))
             cardPool.add(card);
 
         while (pointsToDraw > 0 && cards.size() < capacity) {

@@ -6,9 +6,11 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 public class monsterTakeTurnAction extends AbstractGameAction {
 
     private AbstractMonster __instance;
-    public monsterTakeTurnAction(AbstractMonster m){
-     __instance = m;
+
+    public monsterTakeTurnAction(AbstractMonster m) {
+        __instance = m;
     }
+
     @Override
     public void update() {
         __instance.takeTurn();

@@ -4,15 +4,15 @@ public class Result {
     private Boolean resolved;
     private String whatHappened;
 
-    public Boolean wasSuccessful(){
+    public Boolean wasSuccessful() {
         return resolved;
     }
 
-    public String getWhatHappened(){
+    public String getWhatHappened() {
         return whatHappened;
     }
 
-    public Result(Boolean resolved, String whatHappened){
+    public Result(Boolean resolved, String whatHappened) {
         this.resolved = resolved;
         this.whatHappened = whatHappened;
     }

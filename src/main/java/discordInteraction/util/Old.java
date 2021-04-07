@@ -1,22 +1,5 @@
 package discordInteraction.util;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import discordInteraction.FlavorType;
-import discordInteraction.Main;
-import discordInteraction.card.AbstractCard;
-import discordInteraction.command.QueuedCommandTargeted;
-import discordInteraction.command.QueuedCommandTargetless;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.entities.User;
-
-import java.util.ArrayList;
-import java.util.Map;
-
 public class Old {
 
     // For output, spits out nicly formatted hands of cards.

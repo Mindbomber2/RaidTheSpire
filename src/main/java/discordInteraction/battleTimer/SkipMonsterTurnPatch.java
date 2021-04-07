@@ -9,7 +9,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 @SpirePatch(clz = GameActionManager.class, method = "callEndOfTurnActions")
 public class SkipMonsterTurnPatch {
     @SpirePrefixPatch
-    public static void skipMonsterTurn(){
+    public static void skipMonsterTurn() {
         AbstractDungeon.actionManager.addToBottom(new SkipEnemiesTurnAction());
     }
 }

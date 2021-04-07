@@ -5,8 +5,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.RitualPower;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.util.Combat;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 public class ShowdownDevice extends AbstractCardTargetless {
