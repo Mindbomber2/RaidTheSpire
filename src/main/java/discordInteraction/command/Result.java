@@ -4,7 +4,7 @@ public class Result {
     private Boolean resolved;
     private String whatHappened;
 
-    public Boolean hadResolved(){
+    public Boolean wasSuccessful(){
         return resolved;
     }
 

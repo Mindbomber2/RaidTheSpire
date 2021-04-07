@@ -1,6 +1,6 @@
 package discordInteraction;
 
-import discordInteraction.card.Card;
+import discordInteraction.card.AbstractCard;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import java.util.HashMap;
 import org.reflections.Reflections;
 
 public class Deck {
-    private HashMap<FlavorType, ArrayList<Card>> cards;
+    private HashMap<FlavorType, ArrayList<AbstractCard>> cards;
 
-    public ArrayList<Card> getCardsByFlavorType(FlavorType type){
+    public ArrayList<AbstractCard> getCardsByFlavorType(FlavorType type){
         return cards.get(type);
     }
 
@@ -21,23 +21,23 @@ public class Deck {
     public int getHighestCost(){ return highestCost; }
 
     public Deck() {
-        cards = new HashMap<FlavorType, ArrayList<Card>>();
+        cards = new HashMap<FlavorType, ArrayList<AbstractCard>>();
         highestCost = 1;
 
         for (FlavorType type : FlavorType.values())
-            cards.put(type, new ArrayList<Card>());
+            cards.put(type, new ArrayList<AbstractCard>());
 
         // So this part is... fun.
         // It will look through the entire project and add all defined subclasses of Card into the above Lists based on their Flavor.
-        Reflections reflections = new Reflections(Card.class);
+        Reflections reflections = new Reflections(AbstractCard.class);
 
-        for( Class<? extends Card> cardType : reflections.getSubTypesOf(Card.class)){
+        for( Class<? extends AbstractCard> cardType : reflections.getSubTypesOf(AbstractCard.class)){
             if (Modifier.isAbstract(cardType.getModifiers()))
                 continue;
             try {
-                Card.setTextureForCard(cardType);
+                AbstractCard.setTextureForCard(cardType);
 
-                Card card = cardType.newInstance();
+                AbstractCard card = cardType.newInstance();
                 highestCost = Math.max(highestCost, card.getCost());
                 if (Arrays.stream(card.getFlavorTypes()).anyMatch(FlavorType.basic::equals))
                     cards.get(FlavorType.basic).add(card);

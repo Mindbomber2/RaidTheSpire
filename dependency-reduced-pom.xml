@@ -4,8 +4,8 @@
   <groupId>DiscordInteraction</groupId>
   <artifactId>DiscordInteraction</artifactId>
   <name>DiscordInteraction</name>
-  <version>v0.2.0</version>
-  <description>Attempting to make a mod!</description>
+  <version>v0.3.2</version>
+  <description>Allows viewers to join into a streamer's game as viewer monsters, controlling the actions of their monster with their own deck of cards.</description>
   <build>
     <finalName>DiscordInteraction</finalName>
     <plugins>
