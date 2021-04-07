@@ -3,7 +3,6 @@ package discordInteraction;
 import basemod.*;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.modthespire.lib.ConfigUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -12,13 +11,11 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import discordInteraction.battle.Battle;
 import discordInteraction.bot.Bot;
-import discordInteraction.bot.MessageListener;
-import discordInteraction.command.queue.CommandQueue;
 import discordInteraction.util.FileSystem;
 import discordInteraction.util.Output;
+import discordInteraction.command.list.CommandQueue;
 import kobting.friendlyminions.helpers.MinionConfigHelper;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,10 +24,6 @@ import basemod.interfaces.PreMonsterTurnSubscriber;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,15 +35,11 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     public static final String modName = "DiscordInteraction";
     public static final String botConfigName = "BotConfig";
     public static final Logger logger = LogManager.getLogger(Main.class.getName());
-
-    public Main() {
-        BaseMod.subscribe(this);
-    }
-
     // Various important aspects.
     public static Bot bot;
+    public static MessageChannel channel;
+    public static LocalDateTime lastMessageSent;
     public static Random random;
-
     // Holds a list of viewers along with their respective hands.
     public static HashMap<User, Hand> viewers;
     // Holds all cards split up into their respective card types.
@@ -59,6 +48,9 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     public static Battle battle;
     // Holds current viewer command information.
     public static CommandQueue commandQueue;
+    public Main() {
+        BaseMod.subscribe(this);
+    }
 
     public static void initialize() {
         // Setup the mod.

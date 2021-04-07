@@ -153,7 +153,7 @@ public class MessageListener extends ListenerAdapter {
 
     private void handlePlayCommand(User user, String[] parts) {
         // If they join middle battle; they have to wait to spawn in first.
-        if (!Main.battle.hasViewerMonster(user)){
+        if (!Main.battle.hasViewerMonster(user)) {
             if (Main.battle.canUserSpawnIn(user))
                 Output.sendMessageToUser(user, "You have not yet spawned into the game, please wait until the next turn.");
             else
@@ -287,15 +287,15 @@ public class MessageListener extends ListenerAdapter {
         }
 
         // Queue the command based on its type.
-        switch (card.getViewerCardType()){
+        switch (card.getViewerCardType()) {
             case targeted:
                 if (targets.size() > 0)
-                    Main.commandQueue.targeted.add(new QueuedCommandTargeted(user, (AbstractCardTargeted) card, targets));
+                    Main.commandQueue.targeted.add(new QueuedTimedCommandTargeted(user, (AbstractCardTargeted) card, targets, hand.timer));
                 else
-                    Main.commandQueue.targetless.add(new QueuedCommandTargetless(user, (AbstractCardTargetless) card));
+                    Main.commandQueue.targetless.add(new QueuedTimedCommandTargetless(user, (AbstractCardTargetless) card, hand.timer));
                 break;
             case targetless:
-                Main.commandQueue.targetless.add(new QueuedCommandTargetless(user, (AbstractCardTargetless) card));
+                Main.commandQueue.targetless.add(new QueuedTimedCommandTargetless(user, (AbstractCardTargetless) card, hand.timer));
                 break;
             case triggerOnPlayerDamage:
                 switch (((AbstractCardTriggered)card).getTriggerType()){
@@ -332,7 +332,6 @@ public class MessageListener extends ListenerAdapter {
     }
 
 
-
     private void handleHelpCommand(User user) {
         Output.sendMessageToUser(user, "" +
                 "!hand - Show your hand. Recommended for wider screens.\n" +
@@ -351,7 +350,7 @@ public class MessageListener extends ListenerAdapter {
         );
     }
 
-    private void handleJoinCommand(User user){
+    private void handleJoinCommand(User user) {
         if (!Main.viewers.containsKey(user.getId())) {
             if (Main.deck == null) {
                 Output.sendMessageToUser(user, "Sorry, the game has yet to be started. Please wait for a notice to join.");

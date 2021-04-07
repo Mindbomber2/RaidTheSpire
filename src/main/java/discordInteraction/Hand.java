@@ -1,14 +1,15 @@
 package discordInteraction;
 
 import discordInteraction.card.AbstractCard;
+import discordInteraction.battleTimer.battletimer_const;
 
 import java.util.ArrayList;
 
 public class Hand {
+    public float timer;
     private int capacity;
     private ArrayList<AbstractCard> cards;
     private ArrayList<FlavorType> flavorTypes;
-
     public ArrayList<AbstractCard> getCards(){
         return cards;
     }
@@ -25,6 +26,7 @@ public class Hand {
     }
 
     public Hand(){
+        timer = battletimer_const.TURN_TIMER_VIEWER;
         capacity = 10;
         cards = new ArrayList<AbstractCard>();
 
@@ -53,7 +55,7 @@ public class Hand {
         return null;
     }
 
-    public void discardHand(){
+    public void discardHand() {
         cards.clear();
     }
 
@@ -65,7 +67,7 @@ public class Hand {
                 for(int x = 0; x < Main.deck.getHighestCost(); x++)
                     cardPool.add(card);
 
-        while(pointsToDraw > 0 && cards.size() < capacity){
+        while (pointsToDraw > 0 && cards.size() < capacity) {
             int toDraw = Main.random.nextInt(cardPool.size() + 1) - 1;
             if (toDraw < 0)
                 toDraw = 0;
@@ -77,7 +79,7 @@ public class Hand {
         drawBasics(basicsToDraw);
     }
 
-    public void drawNewHand(int pointsToDraw, int basicsToDraw){
+    public void drawNewHand(int pointsToDraw, int basicsToDraw) {
         discardHand();
         draw(pointsToDraw, basicsToDraw);
     }
@@ -88,7 +90,7 @@ public class Hand {
         for(AbstractCard card : Main.deck.getCardsByFlavorType(FlavorType.basic))
             cardPool.add(card);
 
-        while(pointsToDraw > 0 && cards.size() < capacity){
+        while (pointsToDraw > 0 && cards.size() < capacity) {
             int toDraw = Main.random.nextInt(cardPool.size() + 1) - 1;
             if (toDraw < 0)
                 toDraw = 0;

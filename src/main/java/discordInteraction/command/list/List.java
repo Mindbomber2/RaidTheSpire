@@ -1,20 +1,19 @@
-package discordInteraction.command.queue;
+package discordInteraction.command.list;
 
 import discordInteraction.Main;
 import discordInteraction.command.QueuedCommandBase;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 import static discordInteraction.util.Output.sendMessageToUser;
 
 // This class is designed to be safe from multiple queries.
-public class Queue<T extends QueuedCommandBase> {
+public class List<T extends QueuedCommandBase> {
     private final Object lock = new Object();
-    private Stack<T> commands;
+    private ArrayList<T> commands;
 
-    public Queue(){
-        commands = new Stack<T>();
+    public List(){
+        commands = new ArrayList<T>();
     }
 
     public ArrayList<T> getCommands(){
@@ -37,15 +36,10 @@ public class Queue<T extends QueuedCommandBase> {
             return commands != null && !commands.isEmpty();
         }
     }
-    public T getNextCommand(){
-        synchronized (lock){
-            return commands.pop();
-        }
-    }
+
     public void refund(){
         synchronized (lock){
-            while (hasAnotherCommand()) {
-                QueuedCommandBase command = getNextCommand();
+            for(T command : commands) {
                 if (Main.viewers.containsKey(command.getViewer())) {
                     Main.viewers.get(command.getViewer()).insertCard(command.getCard());
                     sendMessageToUser(command.getViewer(), "Your " + command.getCard().getName() +
