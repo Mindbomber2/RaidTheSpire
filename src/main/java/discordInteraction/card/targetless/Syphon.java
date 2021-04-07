@@ -5,7 +5,6 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.card.targetless.AbstractCardTargetless;
 import discordInteraction.command.Result;
 import net.dv8tion.jda.api.entities.User;
 

@@ -5,7 +5,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.card.triggered.TriggerType;
+import discordInteraction.card.triggered.TriggerTimingType;
 import discordInteraction.command.ResultWithInt;
 import net.dv8tion.jda.api.entities.User;
 
@@ -70,7 +70,7 @@ public class RiskingItAllForAFriend extends AbstractCardTriggeredOnPlayerDamage 
     }
 
     @Override
-    public TriggerType getTriggerType() {
-        return TriggerType.continous;
+    public TriggerTimingType getTriggerTimingType() {
+        return TriggerTimingType.infinite;
     }
 }

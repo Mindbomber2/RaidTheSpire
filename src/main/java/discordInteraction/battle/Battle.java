@@ -4,9 +4,9 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import discordInteraction.Main;
-import discordInteraction.util.Output;
 import discordInteraction.ViewerMinion;
 import discordInteraction.command.Result;
+import discordInteraction.util.Output;
 import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 import kobting.friendlyminions.patches.PlayerAddFieldsPatch;
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static discordInteraction.util.Output.listHandForViewer;
 import static discordInteraction.util.Output.sendMessageToUser;
 
 public class Battle {
@@ -40,29 +39,32 @@ public class Battle {
     // I have baked in +1 to the index in the getters and setters since this is often used for viewer display.
     private ArrayList<Target> targets;
 
-    public Boolean isInBattle(){
-        synchronized (battleLock){
+    public Boolean isInBattle() {
+        synchronized (battleLock) {
             return inBattle;
         }
     }
-    public AbstractRoom getBattleRoom(){
-        synchronized (battleLock){
+
+    public AbstractRoom getBattleRoom() {
+        synchronized (battleLock) {
             return battleRoom;
         }
     }
+
     public String getBattleMessageID() {
         synchronized (battleLock) {
             return battleMessageID;
         }
     }
-    public void setBattleMessageID(String id){
-        synchronized (battleLock){
+
+    public void setBattleMessageID(String id) {
+        synchronized (battleLock) {
             battleMessageID = id;
         }
     }
 
-    public void attemptToAddTarget(AbstractCreature creature, TargetType targetType){
-        synchronized (battleLock){
+    public void attemptToAddTarget(AbstractCreature creature, TargetType targetType) {
+        synchronized (battleLock) {
             for (Target target : targets)
                 if (target.getTarget() == creature)
                     return;
@@ -70,16 +72,18 @@ public class Battle {
                 targets.add(new Target(creature, targetType));
         }
     }
-    public AbstractCreature getTargetByID(int targetID){
-        synchronized (battleLock){
+
+    public AbstractCreature getTargetByID(int targetID) {
+        synchronized (battleLock) {
             return targets.get(targetID - 1).getTarget();
         }
     }
-    public Result isTargetValid(int targetID, TargetType[] targetTypes){
-        synchronized (battleLock){
+
+    public Result isTargetValid(int targetID, TargetType[] targetTypes) {
+        synchronized (battleLock) {
             if (targetID > targets.size())
                 return new Result(false, "Not in targeting list.");
-            Target target = targets.get(targetID-1);
+            Target target = targets.get(targetID - 1);
             if (!Arrays.asList(targetTypes).contains(target.getTargetType()))
                 return new Result(false, "Invalid target type.");
             if (!targets.contains(target))
@@ -89,22 +93,25 @@ public class Battle {
             return new Result(true, "Target is valid.");
         }
     }
-    public HashMap<Integer, AbstractCreature> getTargets(boolean aliveOnly){
-        synchronized (battleLock){
+
+    public HashMap<Integer, AbstractCreature> getTargets(boolean aliveOnly) {
+        synchronized (battleLock) {
             HashMap<Integer, AbstractCreature> toReturn = new HashMap<>();
-            for(int x = 0; x < targets.size(); x++){
+            for (int x = 0; x < targets.size(); x++) {
                 AbstractCreature target = targets.get(x).getTarget();
                 if (target.isDeadOrEscaped() && aliveOnly)
                     continue;
-                toReturn.put(x+1, target);
+                toReturn.put(x + 1, target);
             }
             return toReturn;
         }
     }
+
     public ArrayList<AbstractCreature> getTargetList(boolean aliveOnly) {
         return getTargetList(true, null);
     }
-    public ArrayList<AbstractCreature> getTargetList(boolean aliveOnly, TargetType[] targetTypes){
+
+    public ArrayList<AbstractCreature> getTargetList(boolean aliveOnly, TargetType[] targetTypes) {
         synchronized (battleLock) {
             ArrayList<AbstractCreature> toReturn = new ArrayList<>();
             for (int x = 0; x < targets.size(); x++) {
@@ -119,7 +126,7 @@ public class Battle {
         }
     }
 
-    public void startBattle(AbstractRoom room, boolean isStartOfTurnHook){
+    public void startBattle(AbstractRoom room, boolean isStartOfTurnHook) {
         synchronized (battleLock) {
             if (!isStartOfTurnHook && LocalDateTime.now().minusSeconds(15).isBefore(lastBattleToggle))
                 return;
@@ -129,15 +136,19 @@ public class Battle {
             // Spawn in viewers.
             for (User user : Main.viewers.keySet()) {
                 addViewerMonster(user);
-                sendMessageToUser(user, listHandForViewer(user));
-                sendMessageToUser(user, "A new fight has begun!");
             }
 
             updateTargets();
 
+            // Give viewers some initial information.
+            for (User user : Main.viewers.keySet()) {
+                sendMessageToUser(user, Output.getStatusForUser(user));
+            }
+
+
             // Let our battle know what message to edit for game updates.
             if (Main.bot.channel != null) {
-                Main.bot.channel.sendMessage(Output.getStartOfInProgressBattleMessage() + Output.getTargetListForDisplay(true)).queue((message -> {
+                Main.bot.channel.sendMessage(Output.getStartOfInProgressBattleMessage()).queue((message -> {
                     setBattleMessageID(message.getId());
                 }));
             }
@@ -146,7 +157,7 @@ public class Battle {
         }
     }
 
-    public void endBattle(){
+    public void endBattle() {
         synchronized (battleLock) {
             // End the battle; edit the battle message to showcase the end result.
             Main.bot.channel.retrieveMessageById(getBattleMessageID()).queue((message -> {
@@ -168,19 +179,19 @@ public class Battle {
         }
     }
 
-    public boolean canUserSpawnIn(User user){
+    public boolean canUserSpawnIn(User user) {
         return !viewersDeadUntilNextBattle.contains(user);
     }
 
-    public void addViewerMonster(User user){
-        if (!viewers.containsKey(user)){
+    public void addViewerMonster(User user) {
+        if (!viewers.containsKey(user)) {
             int x = -1200;
             int y = 500;
 
             int count = viewers.size();
-            if ((Integer)PlayerAddFieldsPatch.f_maxMinions.get(AbstractDungeon.player) < count + 2)
+            if ((Integer) PlayerAddFieldsPatch.f_maxMinions.get(AbstractDungeon.player) < count + 2)
                 PlayerAddFieldsPatch.f_maxMinions.set(AbstractDungeon.player, count + 2);
-            while (count >= 8){
+            while (count >= 8) {
                 count -= 8;
                 y -= 140;
             }
@@ -191,29 +202,40 @@ public class Battle {
             viewers.put(user, viewer);
         }
     }
-    public void removeViewerMonster(User user, boolean untilEndOfBattle){
+
+    public void removeViewerMonster(User user, boolean untilEndOfBattle) {
         if (viewers.containsKey(user))
             viewers.remove(user);
         if (untilEndOfBattle)
             viewersDeadUntilNextBattle.add(user);
     }
-    public void removeAllViewerMonsters(){
+
+    public void removeAllViewerMonsters() {
         viewers.clear();
     }
-    public boolean hasViewerMonster(User user){
+
+    public boolean hasViewerMonster(User user) {
         return viewers.containsKey(user);
     }
-    public HashMap<User, AbstractFriendlyMonster> getViewerMonsters(){
+
+    public boolean hasLivingViewerMonster(User user) {
+        if (!hasViewerMonster(user))
+            return false;
+        return !getViewerMonster(user).isDeadOrEscaped();
+    }
+
+    public HashMap<User, AbstractFriendlyMonster> getViewerMonsters() {
         return viewers;
     }
-    public AbstractFriendlyMonster getViewerMonster(User user){
+
+    public AbstractFriendlyMonster getViewerMonster(User user) {
         if (viewers.containsKey(user))
             return viewers.get(user);
         else
             return null;
     }
 
-    public Battle(){
+    public Battle() {
         inBattle = false;
         battleRoom = null;
         viewers = new HashMap<>();
@@ -227,27 +249,32 @@ public class Battle {
             startBattle(AbstractDungeon.getCurrRoom(), false);
 
         // Add any viewers that join mid fight.
-        for (User viewer : viewers.keySet())
-            if (!hasViewerMonster(viewer) && canUserSpawnIn(viewer))
-                addViewerMonster(viewer);
+        addMissingMonsters();
 
         updateTargets();
-
-        // Update our battle message to remove our commands now that they've been executed.
-        Main.bot.channel.retrieveMessageById(Main.battle.getBattleMessageID()).queue((message -> {
-            message.editMessage(Output.getEndOfBattleMessage() + Output.getTargetListForDisplay(false)).queue();
-        }));
     }
 
     public void handlePostEnergyRecharge() {
+        addMissingMonsters();
         updateTargets();
+
+        // Update our battle message to remove any commands that have been executed.
+        Main.bot.channel.retrieveMessageById(Main.battle.getBattleMessageID()).queue((message -> {
+            message.editMessage(Output.getStartOfInProgressBattleMessage()).queue();
+        }));
     }
 
     public void updateTargets() {
-            attemptToAddTarget(AbstractDungeon.player, TargetType.player);
-            for (AbstractCreature creature : battleRoom.monsters.monsters)
-                attemptToAddTarget(creature, TargetType.monster);
-            for (AbstractCreature creature : viewers.values())
-                attemptToAddTarget(creature, TargetType.viewer);
+        attemptToAddTarget(AbstractDungeon.player, TargetType.player);
+        for (AbstractCreature creature : battleRoom.monsters.monsters)
+            attemptToAddTarget(creature, TargetType.monster);
+        for (AbstractCreature creature : viewers.values())
+            attemptToAddTarget(creature, TargetType.viewer);
+    }
+
+    public void addMissingMonsters() {
+        for (User viewer : Main.viewers.keySet())
+            if (!hasViewerMonster(viewer) && canUserSpawnIn(viewer))
+                addViewerMonster(viewer);
     }
 }

@@ -1,18 +1,21 @@
 package discordInteraction.card.targeted;
 
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import discordInteraction.FlavorType;
+import discordInteraction.Main;
 import discordInteraction.battle.TargetType;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 
-public class JoyfulNursing extends AbstractCardTargeted {
+public class LiterallyJustFlames extends AbstractCardTargeted {
     @Override
     public String getName() {
-        return "Joyful Nursing";
+        return "Literally Just Flames";
     }
 
     @Override
@@ -22,55 +25,46 @@ public class JoyfulNursing extends AbstractCardTargeted {
 
     @Override
     public String getDescriptionForViewerDisplay() {
-        return "Heal up to 3 friendly targets for 10 + 10% of their missing health.";
+        return "Deal 6 damage to 2 targets.";
     }
 
     @Override
     public String getFlavorText() {
-        return "Can you really be sure they're different people?";
+        return "Sometimes flames just burn.";
     }
 
     @Override
     public FlavorType[] getFlavorTypes() {
         return new FlavorType[]{
-                FlavorType.support
+                FlavorType.support,
+                FlavorType.oppose
         };
     }
 
     @Override
     public int getTargetCountMin() {
-        return 1;
+        return 2;
     }
 
     @Override
     public int getTargetCountMax() {
-        return 3;
+        return 2;
     }
 
     @Override
     public TargetType[] getTargetTypes() {
         return new TargetType[]{
                 TargetType.player,
-                TargetType.viewer
+                TargetType.viewer,
+                TargetType.monster
         };
     }
 
     @Override
     protected Result apply(User user, AbstractPlayer player, ArrayList<AbstractCreature> targets) {
-        int totalHealed = 0;
-
         for (AbstractCreature target : targets) {
-            if (target.isDeadOrEscaped())
-                continue;
-            int toHeal = 10 + ((target.maxHealth - target.currentHealth) / 10);
-            toHeal = Math.min(toHeal, target.maxHealth - target.currentHealth);
-            target.heal(toHeal);
-            totalHealed += toHeal;
+            Combat.applyDamage(Main.battle.getViewerMonster(user), target, 6, DamageInfo.DamageType.NORMAL);
         }
-
-        if (totalHealed > 0)
-            return new Result(true, "You healed allies for a total of " + totalHealed + " health!");
-        else
-            return new Result(false, "You failed to heal anybody, due to targets being either dead or fully healthy.");
+        return new Result(true, "You burnt your targets.");
     }
 }

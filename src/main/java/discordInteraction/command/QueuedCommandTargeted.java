@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class QueuedCommandTargeted extends QueuedCommandBase<AbstractCardTargeted> {
     private ArrayList<AbstractCreature> targets;
 
-    public ArrayList<AbstractCreature> getTargetsList(){
+    public ArrayList<AbstractCreature> getTargetsList() {
         return targets;
     }
 
@@ -17,7 +17,7 @@ public class QueuedCommandTargeted extends QueuedCommandBase<AbstractCardTargete
         return targets;
     }
 
-    public QueuedCommandTargeted(User player, AbstractCardTargeted card, ArrayList<AbstractCreature> targets){
+    public QueuedCommandTargeted(User player, AbstractCardTargeted card, ArrayList<AbstractCreature> targets) {
         super(player, card);
 
         this.targets = targets;

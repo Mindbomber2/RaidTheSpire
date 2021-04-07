@@ -5,14 +5,16 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import discordInteraction.FlavorType;
 import discordInteraction.Hand;
 import discordInteraction.Main;
-import discordInteraction.util.Formatting;
-import discordInteraction.util.Output;
 import discordInteraction.card.AbstractCard;
 import discordInteraction.card.targeted.AbstractCardTargeted;
 import discordInteraction.card.targetless.AbstractCardTargetless;
-import discordInteraction.card.triggered.AbstractCardTriggered;
 import discordInteraction.card.triggered.onPlayerDamage.AbstractCardTriggeredOnPlayerDamage;
-import discordInteraction.command.*;
+import discordInteraction.command.QueuedCommandTriggered;
+import discordInteraction.command.QueuedTimedCommandTargeted;
+import discordInteraction.command.QueuedTimedCommandTargetless;
+import discordInteraction.command.Result;
+import discordInteraction.util.Formatting;
+import discordInteraction.util.Output;
 import kobting.friendlyminions.monsters.MinionMove;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
@@ -42,8 +44,8 @@ public class MessageListener extends ListenerAdapter {
                         Output.sendMessageToUser(event.getAuthor(), "You have not joined " + AbstractDungeon.player.name + "'s game.");
                     else {
                         Main.viewers.remove(event.getAuthor());
-                        if (Main.battle.isInBattle() && Main.battle.hasViewerMonster(event.getAuthor()));
-                            Main.battle.removeViewerMonster(event.getAuthor(), false);
+                        if (Main.battle.isInBattle() && Main.battle.hasViewerMonster(event.getAuthor())) ;
+                        Main.battle.removeViewerMonster(event.getAuthor(), false);
                         Output.sendMessageToUser(event.getAuthor(), "You have left " + AbstractDungeon.player.name + "'s game.");
                     }
                     break;
@@ -71,12 +73,16 @@ public class MessageListener extends ListenerAdapter {
                     case help:
                         handleHelpCommand(event.getAuthor());
                         break;
+                    case other:
+                    case extra:
+                        handleOtherCommand(event.getAuthor());
+                        break;
                     case debugmeafullhandofcards: // Shh.
                         Main.viewers.get(event.getAuthor()).drawNewHand(10, 2);
                         Output.sendMessageToUser(event.getAuthor(), Output.listHandForViewer(event.getAuthor()));
                         break;
                     case hand: // Show them their cards.
-                    case handlist:
+                    case cards:
                         Output.sendMessageToUser(event.getAuthor(), Output.listHandForViewer(event.getAuthor()));
                         break;
                     case cast:
@@ -101,6 +107,9 @@ public class MessageListener extends ListenerAdapter {
                     case leave:
                         Output.sendMessageToUser(event.getAuthor(), "Sorry, !leave must be used in the channel of the game in question.");
                         break;
+                    case status: // Display all information they may need for the turn.
+                        Output.sendMessageToUser(event.getAuthor(), Output.getStatusForUser(event.getAuthor()));
+                        break;
                     default:
                         break;
                 }
@@ -120,7 +129,7 @@ public class MessageListener extends ListenerAdapter {
                 hand.removeFlavor(flavor);
                 Output.sendMessageToUser(user, "Flavor removed.");
             }
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Output.sendMessageToUser(user, parts[1] + " is not a valid flavor.");
         }
     }
@@ -135,7 +144,7 @@ public class MessageListener extends ListenerAdapter {
                 hand.addFlavor(flavor);
                 Output.sendMessageToUser(user, "Flavor added.");
             }
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Output.sendMessageToUser(user, parts[1] + " is not a valid flavor.");
         }
     }
@@ -270,10 +279,10 @@ public class MessageListener extends ListenerAdapter {
         }
 
         // Make sure it isn't violating card targeting requirements.
-        if (targets.size() > 0){
+        if (targets.size() > 0) {
             if (!(card instanceof AbstractCardTargeted))
                 failed.add("Attempted to add targets to a targetless card");
-            else{
+            else {
                 AbstractCardTargeted cardT = (AbstractCardTargeted) card;
                 if (targets.size() > cardT.getTargetCountMax() || targets.size() < cardT.getTargetCountMin())
                     failed.add("Invalid number of targets, " + card.getName() + " supports " +
@@ -298,14 +307,7 @@ public class MessageListener extends ListenerAdapter {
                 Main.commandQueue.targetless.add(new QueuedTimedCommandTargetless(user, (AbstractCardTargetless) card, hand.timer));
                 break;
             case triggerOnPlayerDamage:
-                switch (((AbstractCardTriggered)card).getTriggerType()){
-                    case continous:
-                        Main.commandQueue.continousTriggerOnPlayerDamage.add(new QueuedCommandTriggerOnPlayerDamage(user, (AbstractCardTriggeredOnPlayerDamage) card));
-                        break;
-                    case oneTime:
-                        Main.commandQueue.oneTimeTriggerOnPlayerDamage.add(new QueuedCommandTriggerOnPlayerDamage(user, (AbstractCardTriggeredOnPlayerDamage) card));
-                        break;
-                }
+                Main.commandQueue.triggerOnPlayerDamage.add(new QueuedCommandTriggered(user, (AbstractCardTriggeredOnPlayerDamage) card));
                 break;
             default:
                 return;
@@ -326,27 +328,31 @@ public class MessageListener extends ListenerAdapter {
 
         // Update our battle message to showcase the newly queued command.
         Main.bot.channel.retrieveMessageById(Main.battle.getBattleMessageID()).queue((message -> {
-            message.editMessage(Output.getEndOfBattleMessage() + Output.getTargetListForDisplay(false) +
+            message.editMessage(Output.getStartOfInProgressBattleMessage() +
                     "\n" + Output.getUpcomingViewerCards()).queue();
         }));
     }
 
 
     private void handleHelpCommand(User user) {
-        Output.sendMessageToUser(user, "" +
-                "!hand - Show your hand. Recommended for wider screens.\n" +
-                "!handList - List your hand. Recommended for narrow screens.\n" +
+        Output.sendMessageToUser(user, "!status - Show your hand, targets, and your current health.\n" +
                 "!(play/cast) card target - (Examples: !play \"A Cool Spell\" 1, " +
                 "!cast ACoolSpell 1,3) - Play a card from your hand. Card should " +
                 "be the name of the card with either no spaces or surrounded by \". " +
                 "Target must be the numeric identifier of a monster, or multiple " +
                 "comma separated numeric identifiers.\n" +
-                "!targets - Outputs an updated list of targets and their targeting ids, which are in square brackets.\n" +
-                "!getallflavors - Show all card flavors currently in game.\n" +
                 "!flavors - Show all flavors that you currently allow.\n" +
                 "!addflavor - Add a flavor to your allowed list.\n" +
                 "!removeflavor - Remove a flavor from your allowed list.\n" +
-                "!leave - Remove you from an active game. Must be used in the channel of an active game."
+                "!leave - Remove you from an active game. Must be used in the channel of an active game.\n" +
+                "!(extra/other) - Get information on some lesser used commands."
+        );
+    }
+
+    private void handleOtherCommand(User user) {
+        Output.sendMessageToUser(user, "!hand/cards - Show your hand.\n" +
+                "!targets - Outputs an updated list of targets and their targeting ids, which are in square brackets.\n" +
+                "!getallflavors - Show all card flavors currently in game.\n"
         );
     }
 
@@ -357,9 +363,8 @@ public class MessageListener extends ListenerAdapter {
                 return;
             }
             Main.viewers.put(user, new Hand());
-            Output.sendMessageToUser(user,
-                    "Welcome to the game! Please type !help in this private channel for additional information on commands.");
-            if (Main.battle.isInBattle()){
+            handleHelpCommand(user);
+            if (Main.battle.isInBattle()) {
                 Output.sendMessageToUser(user, Output.listHandForViewer(user));
                 Output.sendMessageToUser(user, "A battle is currently occuring, you will appear in game at the start of the next turn: Current targets and their targeting ID's: " + Output.getTargetListForDisplay(true));
             }

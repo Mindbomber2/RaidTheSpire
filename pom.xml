@@ -4,19 +4,18 @@
 
     <groupId>DiscordInteraction</groupId>
     <artifactId>DiscordInteraction</artifactId>
-    <version>v0.3.1</version>
+    <version>v0.3.2</version>
     <packaging>jar</packaging>
-
     <name>Raid the Spire</name>
     <description>World's first MMO bossrush dungeoncrawler cardgame</description>
-
     <dependencies>
         <dependency>
             <groupId>friendlyminions</groupId>
             <artifactId>FriendlyMinions</artifactId>
             <version>0.2.0</version>
             <scope>system</scope>
-            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1612426481/FriendlyMinions.jar</systemPath> <!-- WARNING -->
+            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1612426481/FriendlyMinions.jar
+            </systemPath> <!-- WARNING -->
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -35,14 +34,16 @@
             <artifactId>basemod</artifactId>
             <version>2.10.0</version>
             <scope>system</scope>
-            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1605833019/BaseMod.jar</systemPath> <!-- WARNING -->
+            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1605833019/BaseMod.jar
+            </systemPath> <!-- WARNING -->
         </dependency>
         <dependency>
             <groupId>com.evacipated.cardcrawl</groupId>
             <artifactId>ModTheSpire</artifactId>
             <version>2.6.0</version>
             <scope>system</scope>
-            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1605060445/ModTheSpire.jar</systemPath> <!-- WARNING -->
+            <systemPath>D:/SteamLibrary/steamapps/workshop/content/646570/1605060445/ModTheSpire.jar
+            </systemPath> <!-- WARNING -->
         </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
@@ -94,7 +95,8 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <copy file="target/DiscordInteraction.jar" tofile="D:/SteamLibrary/steamapps/common/SlayTheSpire/mods/DiscordInteraction.jar"/> <!-- WARNING -->
+                                <copy file="target/DiscordInteraction.jar"
+                                      tofile="D:/SteamLibrary/steamapps/common/SlayTheSpire/mods/DiscordInteraction.jar"/> <!-- WARNING -->
                             </target>
                         </configuration>
                         <goals>

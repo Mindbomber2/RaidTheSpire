@@ -1,31 +1,24 @@
 package discordInteraction;
 
-import basemod.*;
+import basemod.BaseMod;
 import basemod.interfaces.*;
-import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import discordInteraction.battle.Battle;
 import discordInteraction.bot.Bot;
-import discordInteraction.util.FileSystem;
-import discordInteraction.util.Output;
 import discordInteraction.command.list.CommandQueue;
+import discordInteraction.config.Config;
+import discordInteraction.util.Output;
 import kobting.friendlyminions.helpers.MinionConfigHelper;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import basemod.interfaces.PreMonsterTurnSubscriber;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
-
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Random;
 
 
 @SpireInitializer
@@ -33,13 +26,16 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
         PostCampfireSubscriber, StartActSubscriber, StartGameSubscriber, OnPlayerDamagedSubscriber,
         PostEnergyRechargeSubscriber, PostInitializeSubscriber {
     public static final String modName = "DiscordInteraction";
-    public static final String botConfigName = "BotConfig";
     public static final Logger logger = LogManager.getLogger(Main.class.getName());
+
+    public Main() {
+        BaseMod.subscribe(this);
+    }
+
     // Various important aspects.
     public static Bot bot;
-    public static MessageChannel channel;
-    public static LocalDateTime lastMessageSent;
     public static Random random;
+
     // Holds a list of viewers along with their respective hands.
     public static HashMap<User, Hand> viewers;
     // Holds all cards split up into their respective card types.
@@ -48,9 +44,8 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     public static Battle battle;
     // Holds current viewer command information.
     public static CommandQueue commandQueue;
-    public Main() {
-        BaseMod.subscribe(this);
-    }
+    // Holds various configuration options.
+    public static Config config;
 
     public static void initialize() {
         // Setup the mod.
@@ -59,6 +54,7 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
         bot = new Bot();
         viewers = new HashMap<User, Hand>();
         commandQueue = new CommandQueue();
+        config = new Config();
 
         new Main();
     }
@@ -67,9 +63,6 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     public boolean receivePreMonsterTurn(AbstractMonster monster) {
         // Handle battle logic.
         battle.handlePreMonsterTurnLogic();
-
-        // Send viewer commands. Start with targeted, so they hopefully don't miss their target
-        commandQueue.handlePerTurnLogic();
 
         return true;
     }
@@ -140,24 +133,12 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
 
     @Override
     public void receivePostEnergyRecharge() {
-        // This acts as a pseudo 'player turn' event.
+        // This acts as a pseudo 'pre player turn' event.
         battle.handlePostEnergyRecharge();
     }
 
     @Override
     public void receivePostInitialize() {
-        Texture badgeTexture = new Texture("images/discord.png");
-
-        ModPanel settingsPanel = new ModPanel();
-
-        ModLabeledButton openConfig = new ModLabeledButton("Bot Configuration", 350f, 700f, Settings.BLUE_TEXT_COLOR,
-                Settings.RED_TEXT_COLOR, settingsPanel, (button) ->{
-            File configFile = new File(SpireConfig.makeFilePath(modName, botConfigName));
-            FileSystem.openFileWithDefault(configFile);
-        });
-
-        settingsPanel.addUIElement(openConfig);
-
-        BaseMod.registerModBadge(badgeTexture, "Discord Interaction", "StarKelp", "Allows viewers to interact with your game via in game viewer monsters, using discord chat commands to control their actions.", settingsPanel);
+        config.registerConfigMenu();
     }
 }

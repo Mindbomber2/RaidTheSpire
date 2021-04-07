@@ -9,31 +9,31 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 
-public class JoyfulNursing extends AbstractCardTargeted {
+public class UnPoke extends AbstractCardTargeted {
     @Override
     public String getName() {
-        return "Joyful Nursing";
+        return "UnPoke";
     }
 
     @Override
     public int getCost() {
-        return 4;
+        return 1;
     }
 
     @Override
     public String getDescriptionForViewerDisplay() {
-        return "Heal up to 3 friendly targets for 10 + 10% of their missing health.";
+        return "Restore 3 health to a target.";
     }
 
     @Override
     public String getFlavorText() {
-        return "Can you really be sure they're different people?";
+        return "A gentle poke can be very refreshing.";
     }
 
     @Override
     public FlavorType[] getFlavorTypes() {
         return new FlavorType[]{
-                FlavorType.support
+                FlavorType.basic
         };
     }
 
@@ -44,33 +44,22 @@ public class JoyfulNursing extends AbstractCardTargeted {
 
     @Override
     public int getTargetCountMax() {
-        return 3;
+        return 1;
     }
 
     @Override
     public TargetType[] getTargetTypes() {
         return new TargetType[]{
                 TargetType.player,
+                TargetType.monster,
                 TargetType.viewer
         };
     }
 
     @Override
     protected Result apply(User user, AbstractPlayer player, ArrayList<AbstractCreature> targets) {
-        int totalHealed = 0;
-
-        for (AbstractCreature target : targets) {
-            if (target.isDeadOrEscaped())
-                continue;
-            int toHeal = 10 + ((target.maxHealth - target.currentHealth) / 10);
-            toHeal = Math.min(toHeal, target.maxHealth - target.currentHealth);
-            target.heal(toHeal);
-            totalHealed += toHeal;
-        }
-
-        if (totalHealed > 0)
-            return new Result(true, "You healed allies for a total of " + totalHealed + " health!");
-        else
-            return new Result(false, "You failed to heal anybody, due to targets being either dead or fully healthy.");
+        AbstractCreature target = targets.get(0);
+        target.heal(3, true);
+        return new Result(true, "You healed " + target.name + " for 3 health.");
     }
 }

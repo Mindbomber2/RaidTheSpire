@@ -10,7 +10,7 @@ public class QueuedTimedCommandTargeted extends QueuedCommandBase<AbstractCardTa
     public float timer;
     private ArrayList<AbstractCreature> targets;
 
-    public ArrayList<AbstractCreature> getTargetsList(){
+    public ArrayList<AbstractCreature> getTargetsList() {
         return targets;
     }
 
@@ -18,13 +18,13 @@ public class QueuedTimedCommandTargeted extends QueuedCommandBase<AbstractCardTa
         return targets;
     }
 
-    public QueuedTimedCommandTargeted(User player, AbstractCardTargeted card, ArrayList<AbstractCreature> targets, float timer){
+    public QueuedTimedCommandTargeted(User player, AbstractCardTargeted card, ArrayList<AbstractCreature> targets, float timer) {
         super(player, card);
         this.timer = timer;
         this.targets = targets;
     }
 
-    public void reduceTimer(){
-        this.timer-=1;
+    public void reduceTimer() {
+        this.timer -= 1;
     }
 }

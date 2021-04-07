@@ -6,8 +6,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.ArtifactPower;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
-import discordInteraction.util.Combat;
 import discordInteraction.command.Result;
+import discordInteraction.util.Combat;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Panacea extends AbstractCardTargetless {
     public Result activate(User user, AbstractPlayer player) {
         ArrayList<AbstractCreature> targets = new ArrayList<AbstractCreature>();
         targets.add(player);
-        for(AbstractMonster monster : Main.battle.getBattleRoom().monsters.monsters)
+        for (AbstractMonster monster : Main.battle.getBattleRoom().monsters.monsters)
             if (!monster.isDeadOrEscaped())
                 targets.add(monster);
 

@@ -1,12 +1,11 @@
 package discordInteraction.util;
 
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
 import discordInteraction.card.AbstractCard;
-import discordInteraction.command.QueuedCommandTargeted;
-import discordInteraction.command.QueuedCommandTargetless;
+import discordInteraction.command.QueuedTimedCommandTargeted;
+import discordInteraction.command.QueuedTimedCommandTargetless;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -71,7 +70,7 @@ public class Output {
         if (!Main.commandQueue.hasQueuedCommands())
             return "No commands currently queued.";
         StringBuilder sb = new StringBuilder();
-        for (QueuedCommandTargeted command : Main.commandQueue.targeted.getCommands()) {
+        for (QueuedTimedCommandTargeted command : Main.commandQueue.targeted.getCommands()) {
             sb.append(command.getViewer().getName());
             sb.append(" is going to cast ");
             sb.append(command.getCard().getName());
@@ -82,7 +81,7 @@ public class Output {
             sb.append(targets);
             sb.append(".\n");
         }
-        for (QueuedCommandTargetless command : Main.commandQueue.targetless.getCommands()) {
+        for (QueuedTimedCommandTargetless command : Main.commandQueue.targetless.getCommands()) {
             sb.append(command.getViewer().getName());
             sb.append(" is going to cast ");
             sb.append(command.getCard().getName());
@@ -104,12 +103,42 @@ public class Output {
     }
 
     public static String getStartOfInProgressBattleMessage() {
-        return "Enemies in " + AbstractDungeon.player.name + "'s current room that is updated every minute. " +
-                "You may request an updated list of enemies with !enemies in a private message." +
-                "Their targeting IDs can be found in the brackets:\n";
+        return "A battle is in progress!\n" +
+                "If you have not yet joined in, you can type !join to join the game!\n" +
+                "You may request an updated list of enemies with !targets in a private message.";
     }
 
     public static String getEndOfBattleMessage() {
         return "This battle has ended; any cards in the queue have been refunded.\n";
+    }
+
+    // An 'all in one' display of sorts.
+    public static String getStatusForUser(User user) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Formatting.putInCodeBlock("Cards"));
+        sb.append(listHandForViewer(user));
+        if (Main.battle.isInBattle()) {
+            sb.append(Formatting.putInCodeBlock("Targets [TargetingID]"));
+            sb.append(getTargetListForDisplay(true));
+            sb.append(Formatting.putInCodeBlock("Status"));
+            if (Main.battle.hasLivingViewerMonster(user)) {
+                AbstractCreature viewer = Main.battle.getViewerMonster(user);
+                sb.append("Health: ");
+                sb.append(viewer.currentHealth);
+                sb.append('/');
+                sb.append(viewer.maxHealth);
+                sb.append("\n");
+                sb.append("Command Queued: ");
+                sb.append(Main.commandQueue.userHasCommandQueued(user));
+                sb.append("\n");
+            } else if (Main.battle.canUserSpawnIn(user))
+                sb.append("You have not yet spawned in, and should at the start of the next turn.");
+            else
+                sb.append("You are currently dead, and are unable to play any cards until the next battle.");
+        } else {
+            sb.append(Formatting.putInCodeBlock("Status"));
+            sb.append("There is currently no battle in progress.");
+        }
+        return sb.toString();
     }
 }

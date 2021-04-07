@@ -52,10 +52,14 @@ public class Formatting {
         return result;
     }
 
-    public static String getStringFromArrayList(ArrayList<String> list, String divider){
+    public static String getStringFromArrayList(ArrayList<String> list, String divider) {
         String result = list.get(0);
-        for(int x = 1; x < list.size(); x++)
+        for (int x = 1; x < list.size(); x++)
             result += divider + list.get(x);
-        return  result;
+        return result;
+    }
+
+    public static String putInCodeBlock(String string) {
+        return "```\n" + string + "```";
     }
 }
