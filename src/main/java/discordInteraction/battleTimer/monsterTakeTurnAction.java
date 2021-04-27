@@ -2,6 +2,7 @@ package discordInteraction.battleTimer;
 
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
 public class monsterTakeTurnAction extends AbstractGameAction {
 

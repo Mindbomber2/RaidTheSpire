@@ -3,11 +3,13 @@ package discordInteraction;
 import basemod.BaseMod;
 import basemod.interfaces.*;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import discordInteraction.battle.Battle;
+import discordInteraction.battleTimer.AddDelayCardQueueAction;
 import discordInteraction.bot.Bot;
 import discordInteraction.command.list.CommandQueue;
 import discordInteraction.config.Config;
@@ -24,7 +26,7 @@ import java.util.Random;
 @SpireInitializer
 public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnStartBattleSubscriber,
         PostCampfireSubscriber, StartActSubscriber, StartGameSubscriber, OnPlayerDamagedSubscriber,
-        PostEnergyRechargeSubscriber, PostInitializeSubscriber {
+        PostEnergyRechargeSubscriber, PostInitializeSubscriber, OnCardUseSubscriber {
     public static final String modName = "DiscordInteraction";
     public static final Logger logger = LogManager.getLogger(Main.class.getName());
 
@@ -140,5 +142,10 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     @Override
     public void receivePostInitialize() {
         config.registerConfigMenu();
+    }
+
+    @Override
+    public void receiveCardUsed(AbstractCard abstractCard) {
+        AddDelayCardQueueAction.addDelayCardQueueAction();
     }
 }

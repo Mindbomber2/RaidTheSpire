@@ -10,6 +10,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 public class SkipMonsterTurnPatch {
     @SpirePrefixPatch
     public static void skipMonsterTurn() {
-        AbstractDungeon.actionManager.addToBottom(new SkipEnemiesTurnAction());
+            AbstractDungeon.actionManager.addToBottom(new SkipEnemiesTurnAction());
+            TurnbasedPowerStuff.triggerEndOfTurnPowersOnPlayer();
+            AbstractDungeon.actionManager.addToBottom(new DelayCardQueueAction(8));
     }
 }
