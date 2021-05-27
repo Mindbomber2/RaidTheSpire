@@ -10,7 +10,7 @@ public class DelayCardQueueAction extends AbstractGameAction {
     private int energy;
 
     public DelayCardQueueAction(){
-        this(3);
+        this(2.5f);
     }
     public DelayCardQueueAction(float timer){
         this.duration=timer;
