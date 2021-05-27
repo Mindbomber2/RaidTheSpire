@@ -10,6 +10,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import discordInteraction.Main;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class AbstractMonsterPatch {
     public static class timerRenderPatch {
         @SpirePostfixPatch
         public static void timerCtorPatch(AbstractMonster __instance, SpriteBatch sb) {
-            if (BattleTimerCore.hasMinions && __instance instanceof AbstractFriendlyMonster) { return; }
+            if (__instance instanceof AbstractFriendlyMonster) { return; }
             if(!__instance.isDeadOrEscaped()) {
                 DrawMonsterTimer.drawMonsterTimer(sb, __instance, patchIntoTimer.currentMonsterTimer.get(__instance),
                         patchIntoTimer.currentMaxMonsterTimer.get(__instance));
