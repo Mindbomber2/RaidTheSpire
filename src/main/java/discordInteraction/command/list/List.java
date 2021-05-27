@@ -31,6 +31,12 @@ public class List<T extends QueuedCommandBase> {
         }
     }
 
+    public void remove(T command){
+        synchronized (lock) {
+            commands.remove(command);
+        }
+    }
+
     public boolean hasAnotherCommand() {
         synchronized (lock) {
             return commands != null && !commands.isEmpty();

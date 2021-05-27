@@ -4,8 +4,8 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import discordInteraction.FlavorType;
 import discordInteraction.Main;
 import discordInteraction.card.AbstractCard;
-import discordInteraction.command.QueuedTimedCommandTargeted;
-import discordInteraction.command.QueuedTimedCommandTargetless;
+import discordInteraction.command.QueuedCommandTargeted;
+import discordInteraction.command.QueuedCommandTargetless;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -70,7 +70,7 @@ public class Output {
         if (!Main.commandQueue.hasQueuedCommands())
             return "No commands currently queued.";
         StringBuilder sb = new StringBuilder();
-        for (QueuedTimedCommandTargeted command : Main.commandQueue.targeted.getCommands()) {
+        for (QueuedCommandTargeted command : Main.commandQueue.targeted.getCommands()) {
             sb.append(command.getViewer().getName());
             sb.append(" is going to cast ");
             sb.append(command.getCard().getName());
@@ -81,7 +81,7 @@ public class Output {
             sb.append(targets);
             sb.append(".\n");
         }
-        for (QueuedTimedCommandTargetless command : Main.commandQueue.targetless.getCommands()) {
+        for (QueuedCommandTargetless command : Main.commandQueue.targetless.getCommands()) {
             sb.append(command.getViewer().getName());
             sb.append(" is going to cast ");
             sb.append(command.getCard().getName());

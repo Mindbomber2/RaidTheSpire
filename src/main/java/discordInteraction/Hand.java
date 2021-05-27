@@ -1,12 +1,10 @@
 package discordInteraction;
 
-import discordInteraction.battleTimer.battletimer_const;
 import discordInteraction.card.AbstractCard;
 
 import java.util.ArrayList;
 
 public class Hand {
-    public float timer;
     private int capacity;
     private ArrayList<AbstractCard> cards;
     private ArrayList<FlavorType> flavorTypes;
@@ -30,7 +28,6 @@ public class Hand {
     }
 
     public Hand() {
-        timer = battletimer_const.TURN_TIMER_VIEWER;
         capacity = 10;
         cards = new ArrayList<AbstractCard>();
 

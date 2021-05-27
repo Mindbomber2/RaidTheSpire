@@ -9,13 +9,13 @@ import net.dv8tion.jda.api.entities.User;
 import static discordInteraction.util.Output.sendMessageToUser;
 
 public class CommandQueue {
-    public List<QueuedTimedCommandTargeted> targeted;
-    public List<QueuedTimedCommandTargetless> targetless;
+    public List<QueuedCommandTargeted> targeted;
+    public List<QueuedCommandTargetless> targetless;
     public List<QueuedCommandTriggered> triggerOnPlayerDamage;
 
     public CommandQueue() {
-        targeted = new List<QueuedTimedCommandTargeted>();
-        targetless = new List<QueuedTimedCommandTargetless>();
+        targeted = new List<QueuedCommandTargeted>();
+        targetless = new List<QueuedCommandTargetless>();
         triggerOnPlayerDamage = new List<QueuedCommandTriggered>();
     }
 
@@ -24,10 +24,10 @@ public class CommandQueue {
     }
 
     public boolean userHasCommandQueued(User user) {
-        for (QueuedTimedCommandTargeted command : targeted.getCommands())
+        for (QueuedCommandTargeted command : targeted.getCommands())
             if (command.getViewer() == user)
                 return true;
-        for (QueuedTimedCommandTargetless command : targetless.getCommands())
+        for (QueuedCommandTargetless command : targetless.getCommands())
             if (command.getViewer() == user)
                 return true;
         for (QueuedCommandBase command : triggerOnPlayerDamage.getCommands())
@@ -87,14 +87,18 @@ public class CommandQueue {
         return incomingDamage;
     }
 
-    public void handleEndOfPlayerTurnLogic() {
-        for (QueuedTimedCommandTargeted command : targeted.getCommands()) {
+    public void handleEndOfPlayerTurnLogic(User user) {
+        for (QueuedCommandTargeted command : targeted.getCommands()) {
+            if(!(command.getViewer() == user)){
+                continue;
+            }
 
             // Viewer died to something, pop their command off the list.
             if (!command.hasLivingViewerMonster())
                 continue;
 
             Result result = command.getCard().activate(command.getViewer(), AbstractDungeon.player, command.getTargets());
+            targeted.remove(command);
             if (result.wasSuccessful()) {
                 sendMessageToUser(command.getViewer(), "You successfully casted " + command.getCard().getName() + ". " + result.getWhatHappened());
                 command.handleRemovalLogic(false);
@@ -105,13 +109,17 @@ public class CommandQueue {
 
         }
 
-        for (QueuedTimedCommandTargetless command : targetless.getCommands()) {
+        for (QueuedCommandTargetless command : targetless.getCommands()) {
+            if(!(command.getViewer() == user)){
+                continue;
+            }
 
             // Viewer died to something, pop their command off the list.
             if (!command.hasLivingViewerMonster())
                 continue;
 
             Result result = command.getCard().activate(command.getViewer(), AbstractDungeon.player);
+            targetless.remove(command);
             if (result.wasSuccessful()) {
                 sendMessageToUser(command.getViewer(), "You successfully casted " + command.getCard().getName() + ". " + result.getWhatHappened());
                 command.handleRemovalLogic(false);

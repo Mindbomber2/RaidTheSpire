@@ -13,10 +13,7 @@ import kobting.friendlyminions.patches.PlayerAddFieldsPatch;
 import net.dv8tion.jda.api.entities.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import static discordInteraction.util.Output.sendMessageToUser;
 
@@ -233,6 +230,19 @@ public class Battle {
             return viewers.get(user);
         else
             return null;
+    }
+
+    public User getUser(AbstractFriendlyMonster monster){
+        if(viewers.containsValue(monster)){
+            for(Map.Entry<User, AbstractFriendlyMonster> e : viewers.entrySet()){
+                if (e.getValue().equals(monster)){
+                    return e.getKey();
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
     }
 
     public Battle() {

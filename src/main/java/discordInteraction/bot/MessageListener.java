@@ -10,8 +10,8 @@ import discordInteraction.card.targeted.AbstractCardTargeted;
 import discordInteraction.card.targetless.AbstractCardTargetless;
 import discordInteraction.card.triggered.onPlayerDamage.AbstractCardTriggeredOnPlayerDamage;
 import discordInteraction.command.QueuedCommandTriggered;
-import discordInteraction.command.QueuedTimedCommandTargeted;
-import discordInteraction.command.QueuedTimedCommandTargetless;
+import discordInteraction.command.QueuedCommandTargeted;
+import discordInteraction.command.QueuedCommandTargetless;
 import discordInteraction.command.Result;
 import discordInteraction.util.Formatting;
 import discordInteraction.util.Output;
@@ -299,12 +299,12 @@ public class MessageListener extends ListenerAdapter {
         switch (card.getViewerCardType()) {
             case targeted:
                 if (targets.size() > 0)
-                    Main.commandQueue.targeted.add(new QueuedTimedCommandTargeted(user, (AbstractCardTargeted) card, targets, hand.timer));
+                    Main.commandQueue.targeted.add(new QueuedCommandTargeted(user, (AbstractCardTargeted) card, targets));
                 else
-                    Main.commandQueue.targetless.add(new QueuedTimedCommandTargetless(user, (AbstractCardTargetless) card, hand.timer));
+                    Main.commandQueue.targetless.add(new QueuedCommandTargetless(user, (AbstractCardTargetless) card));
                 break;
             case targetless:
-                Main.commandQueue.targetless.add(new QueuedTimedCommandTargetless(user, (AbstractCardTargetless) card, hand.timer));
+                Main.commandQueue.targetless.add(new QueuedCommandTargetless(user, (AbstractCardTargetless) card));
                 break;
             case triggerOnPlayerDamage:
                 Main.commandQueue.triggerOnPlayerDamage.add(new QueuedCommandTriggered(user, (AbstractCardTriggeredOnPlayerDamage) card));

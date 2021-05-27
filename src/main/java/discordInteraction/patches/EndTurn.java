@@ -12,6 +12,6 @@ import discordInteraction.Main;
 public class EndTurn {
     @SpirePrefixPatch
     public static void Prefix(AbstractRoom _instance) {
-        Main.commandQueue.handleEndOfPlayerTurnLogic();
+        //Main.commandQueue.handleEndOfPlayerTurnLogic();
     }
 }

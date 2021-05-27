@@ -146,6 +146,6 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
 
     @Override
     public void receiveCardUsed(AbstractCard abstractCard) {
-        AddDelayCardQueueAction.addDelayCardQueueAction();
+        //AddDelayCardQueueAction.addDelayCardQueueAction();
     }
 }
