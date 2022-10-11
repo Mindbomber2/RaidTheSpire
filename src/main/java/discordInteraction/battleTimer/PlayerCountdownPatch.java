@@ -54,9 +54,9 @@ public class PlayerCountdownPatch {
         public static Color getColor() {
             AbstractPlayer p = AbstractDungeon.player;
             Color color = Color.YELLOW;
-            if (patchIntoTimer.currentPlayerTimer.get(p) > 2 * patchIntoTimer.currentMaxPlayerTimer.get(p) / 3) {
+            if (Math.floor(patchIntoTimer.currentPlayerTimer.get(p)) > 2 * patchIntoTimer.currentMaxPlayerTimer.get(p) / 3) {
                 color = Color.GREEN;
-            } else if (patchIntoTimer.currentPlayerTimer.get(p) < patchIntoTimer.currentMaxPlayerTimer.get(p) / 3) {
+            } else if (Math.floor(patchIntoTimer.currentPlayerTimer.get(p)) < patchIntoTimer.currentMaxPlayerTimer.get(p) / 3) {
                 color = Color.RED;
             }
             return color;
@@ -97,6 +97,7 @@ public class PlayerCountdownPatch {
                         patchIntoTimer.currentPlayerTimer.get(p) - Gdx.graphics.getDeltaTime());
                 if (patchIntoTimer.currentPlayerTimer.get(p) <= 0f) {
                     patchIntoTimer.canPlayCard.set(p, true);
+                    TurnbasedPowerStuff.triggerEndOfTurnPowersOnPlayer();
                     float calculatedTime = patchIntoTimer.calculateTime(p);
                     patchIntoTimer.currentPlayerTimer.set(p, calculatedTime);
                     patchIntoTimer.currentMaxPlayerTimer.set(p, calculatedTime);
