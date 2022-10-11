@@ -14,7 +14,7 @@ import discordInteraction.battleTimer.constants.personalities.*;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 import net.dv8tion.jda.api.entities.User;
 
-import static discordInteraction.battleTimer.constants.EnemyTimers.*;
+import static discordInteraction.battleTimer.constants.TurnTimers.*;
 
 public class AbstractMonsterPatch {
 
@@ -108,8 +108,8 @@ public class AbstractMonsterPatch {
                 return;
             }
             if (!__instance.isDeadOrEscaped()) {
-                DrawMonsterTimer.drawMonsterTimer(sb, __instance, patchIntoTimer.currentMonsterTimer.get(__instance),
-                        patchIntoTimer.currentMaxMonsterTimer.get(__instance));
+                    DrawMonsterTimer.drawMonsterTimer(sb, __instance, patchIntoTimer.currentMonsterTimer.get(__instance),
+                            patchIntoTimer.currentMaxMonsterTimer.get(__instance));
             }
             if (!AbstractDungeon.isScreenUp) {
                 patchIntoTimer.currentMonsterTimer.set(__instance,

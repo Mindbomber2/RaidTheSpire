@@ -9,11 +9,8 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
-import java.util.ArrayList;
-
-import static discordInteraction.battleTimer.constants.EnemyTimers.*;
+import static discordInteraction.battleTimer.constants.TurnTimers.*;
 
 public class I_Cant_Believe_Its_Not_AbstractMonsterPatch {
 

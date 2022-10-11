@@ -9,8 +9,9 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import discordInteraction.battle.Battle;
-import discordInteraction.battleTimer.AddDelayCardQueueAction;
 import discordInteraction.bot.Bot;
+import discordInteraction.cardLogic.DrawOnCardUse;
+import discordInteraction.cardLogic.CooldownManager;
 import discordInteraction.command.list.CommandQueue;
 import discordInteraction.config.Config;
 import discordInteraction.util.Output;
@@ -59,6 +60,14 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
         config = new Config();
 
         new Main();
+    }
+
+    public static String makeID(String idText) {
+        return modName + ":" + idText;
+    }
+
+    public static String makeCardPath(String resourcePath) {
+        return "images/cards/" + resourcePath;
     }
 
     @Override
@@ -114,6 +123,7 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
 
     @Override
     public void receiveStartGame() {
+
         // Register our cards.
         if (deck == null)
             deck = new Deck();
@@ -147,5 +157,7 @@ public class Main implements PreMonsterTurnSubscriber, PostBattleSubscriber, OnS
     @Override
     public void receiveCardUsed(AbstractCard abstractCard) {
         //AddDelayCardQueueAction.addDelayCardQueueAction();
+        DrawOnCardUse.drawOnCardUse();
+        CooldownManager.reduceCooldowns();
     }
 }
