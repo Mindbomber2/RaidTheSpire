@@ -3,9 +3,12 @@ package discordInteraction.battleTimer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.common.EndTurnAction;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
@@ -97,7 +100,15 @@ public class PlayerCountdownPatch {
                         patchIntoTimer.currentPlayerTimer.get(p) - Gdx.graphics.getDeltaTime());
                 if (patchIntoTimer.currentPlayerTimer.get(p) <= 0f) {
                     patchIntoTimer.canPlayCard.set(p, true);
-                    TurnbasedPowerStuff.triggerEndOfTurnPowersOnPlayer();
+                    AbstractDungeon.actionManager.callEndTurnEarlySequence();
+                    for(AbstractPower power : AbstractDungeon.player.powers){
+                        power.atEndOfRound();
+                    }
+                    for(AbstractCard card : AbstractDungeon.player.hand.group){
+                        if(card.retain||card.selfRetain){
+                            card.onRetained();
+                        }
+                    }
                     float calculatedTime = patchIntoTimer.calculateTime(p);
                     patchIntoTimer.currentPlayerTimer.set(p, calculatedTime);
                     patchIntoTimer.currentMaxPlayerTimer.set(p, calculatedTime);

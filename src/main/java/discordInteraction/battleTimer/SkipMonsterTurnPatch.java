@@ -12,14 +12,5 @@ public class SkipMonsterTurnPatch {
     @SpirePrefixPatch
     public static void skipMonsterTurn() {
             AbstractDungeon.actionManager.addToBottom(new SkipEnemiesTurnAction());
-            TurnbasedPowerStuff.triggerEndOfTurnPowersOnPlayer();
-            AbstractDungeon.actionManager.addToBottom(new DelayCardQueueAction(2.5f));
-            AbstractDungeon.actionManager.addToBottom(new AbstractGameAction() {
-                @Override
-                public void update() {
-                    GameActionManager.turn += 1;
-                    isDone = true;
-                }
-            });
     }
 }
